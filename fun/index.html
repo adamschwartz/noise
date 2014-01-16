@@ -1,0 +1,64 @@
+<body>
+<script>
+document.body.style.margin = 0;
+document.documentElement.style.overflow = 'hidden';
+document.documentElement.style.height = '100%';
+document.body.style.overflow = 'hidden';
+document.body.style.height = '100%';
+w = document.body.clientWidth;
+h = document.body.clientHeight;
+v = document.createElement('canvas');
+v.width = w;
+v.height = h;
+document.body.appendChild(v);
+c = v.getContext('2d');
+c.fillStyle = '#fff';
+c.fillRect(0, 0, w, h);
+i = c.getImageData(0, 0, w, h);
+s = false;
+m = Math.random() * h * w * 4;
+n = Math.random() * 100;
+setInterval(function(){
+    for (y = 0; y < h; y++) {
+        for (x = 0; x < w; x++) {
+            z = (x + (y * i.width)) * 4;
+            r = i.data[z];
+            g = i.data[z + 1];
+            b = i.data[z + 2];
+            r = Math.random() * 255;
+            g = Math.random() * 255;
+            b = Math.random() * 255;
+            if (s === true) {
+                r = g = b = 50;
+                if (Math.random() < .01) {
+                    s = !s;
+                }
+            } else {
+                if (Math.random() < .00001) {
+                    s = !s;
+                }
+            }
+            if ((Math.abs(z - m) % h) < w / n) {
+                r = g = b = 255;
+            }
+            if ((Math.abs(z - m) % w) < (Math.random() * 10)) {
+                r = g = b = 255;
+            }
+            i.data[z] = r;
+            i.data[z + 1] = g;
+            i.data[z + 2] = b;
+        }
+    }
+    m = (m + (Math.random() * 10) * (Math.random() > .5 ? w : -w)) % (h * w * 4);
+    n = ((Math.random() * 20) * (n + Math.random() > .5 ? 1 : -1) % 100) + 10
+    c.putImageData(i, 0, 0);
+}, 1000 / 60);
+window.onresize = function(){
+    w = document.body.clientWidth;
+    h = document.body.clientHeight;
+    v.width = w;
+    v.height = h;
+    c.fillRect(0, 0, w, h);
+    i = c.getImageData(0, 0, w, h);
+};
+</script>
